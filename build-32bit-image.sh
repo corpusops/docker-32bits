@@ -1,4 +1,5 @@
-set -ex
+set -e
+set -x
 os=${2:-debian}
 arch=i386
 suite=${1:-trixie}
@@ -47,7 +48,9 @@ case $os in
         exit 1
 esac
 export DEBIAN_FRONTEND=noninteractive
-if [ ! -e $chroot_dir/bin/ls ];then debootstrap --variant=minbase --arch=$arch $suite $chroot_dir $apt_mirror;fi
+if [ ! -e $chroot_dir/bin/ls ];then
+    debootstrap --verbose --no-check-gpg --variant=minbase --arch=$arch $suite $chroot_dir $apt_mirror
+fi
 cp /etc/resolv.conf $chroot_dir/etc/resolv.conf
 if [ ! -e $chroot_dir/proc/1 ];then
     mount -o bind /proc $chroot_dir/proc
